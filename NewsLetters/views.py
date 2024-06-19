@@ -50,7 +50,7 @@ def trigger_send_newsletters(request):
         try:
             def execute_send_emails():
                 try:
-                    call_command('send_emails')  # Replace with your actual management command
+                    call_command('send_emails')
                 except Exception as e:
                     # Handle exceptions here if needed
                     logger.error(f"{STR_NEWSLETTER_TASK_ERROR} {str(e)}")

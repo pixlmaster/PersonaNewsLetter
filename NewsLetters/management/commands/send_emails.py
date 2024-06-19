@@ -1,4 +1,6 @@
 from django.core.management.base import BaseCommand
+
+from NewsLetters.consts import SENDER_EMAIL
 from NewsLetters.models import Content, Subscriber
 from django.core.mail import send_mail
 from django.utils import timezone
@@ -23,10 +25,10 @@ class Command(BaseCommand):
             for subscriber in subscribers:
                 # TODO : Configure sending email
                 pass
-                # send_mail(
-                #     f"Newsletter: {content.topic.name}",
-                #     content.content_text,
-                #     'xyzl@example.com',
-                #     [subscriber.email],
-                # )
+                send_mail(
+                    f"Newsletter: {content.topic.name}",
+                    content.content_text,
+                    SENDER_EMAIL,
+                    [subscriber.email],
+                )
             content.delete()

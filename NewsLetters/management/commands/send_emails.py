@@ -1,7 +1,9 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import cachetools
 from django.core.management.base import BaseCommand
 
-from NewsLetters.consts import SENDER_EMAIL, STR_EMAIL_SENT_SUCCESSFULLY
+from NewsLetters.consts import SENDER_EMAIL, STR_EMAIL_SENT_SUCCESSFULLY, MAX_WORKERS_SEND_EMAIL
 from NewsLetters.models import Content, Subscriber
 from django.core.mail import send_mail
 from django.utils import timezone
@@ -13,6 +15,22 @@ logger = logging.getLogger(__name__)
 
 subscriber_cache = cachetools.LRUCache(maxsize=10000)
 
+
+def send_newsletters(content, subscribers):
+    for subscriber in subscribers:
+        try:
+            send_mail(
+                f"Newsletter: {content.topic.name}",
+                content.content_text,
+                SENDER_EMAIL,
+                [subscriber.email],
+                fail_silently=True
+            )
+            logger.debug(STR_EMAIL_SENT_SUCCESSFULLY.format(subscriber.email))
+        except Exception as e:
+            logger.error(f"Failed to send email to {subscriber.email}: {str(e)}")
+
+
 class Command(BaseCommand):
     """
     Custom Django management command to send scheduled newsletter emails.
@@ -20,6 +38,8 @@ class Command(BaseCommand):
     Retrieves newsletter content scheduled for sending, iterates
     through each content to send emails to subscribers of its topic,
     and deletes the sent content after sending the emails.
+    Since the content for each subscriber list is the same, we can easily implment
+    multithreading to process each list of subscribers separately
     """
 
     help = 'Send scheduled newsletter emails'
@@ -29,22 +49,31 @@ class Command(BaseCommand):
         contents = Content.objects.filter(send_time__lte=now)
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()
-        # foe each content
-        for content in contents:
-            # try to get from cache
-            subscribers = subscriber_cache.get(content.topic)
-            # if not present in cache ,find out which subscribers do we need to send data to from db
-            if not subscribers:
-                subscribers = Subscriber.objects.filter(topic=content.topic)
-                subscriber_cache[content.topic] = subscribers
-            # TODO: Implement multi threading for each subscriber list
-            for subscriber in subscribers:
-                send_mail(
-                    f"Newsletter: {content.topic.name}",
-                    content.content_text,
-                    SENDER_EMAIL,
-                    [subscriber.email],
-                    fail_silently= True
-                )
-                logger.debug(STR_EMAIL_SENT_SUCCESSFULLY.format(subscriber.email))
-            content.delete()
+        # Create a thread pool executor
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS_SEND_EMAIL) as executor:
+            # Dictionary to hold futures
+            futures = {}
+            # For each content
+            for content in contents:
+                # Try to get from cache
+                subscribers = subscriber_cache.get(content.topic)
+                # If not present in cache, find out which subscribers we need to send data to from DB
+                if not subscribers:
+                    subscribers = list(Subscriber.objects.filter(topic=content.topic))
+                    subscriber_cache[content.topic] = subscribers
+
+                # Submit each list of subscribers to the executor
+                future = executor.submit(send_newsletters, content, subscribers)
+                futures[future] = content
+
+            # Process the results as they complete
+            for future in as_completed(futures):
+                content = futures[future]
+                try:
+                    future.result()
+                    # Delete content from the DB after sending all emails
+                    content.delete()
+                except Exception as e:
+                    logger.error(f"Error processing content {content.id}: {str(e)}")
+
+        self.stdout.write(self.style.SUCCESS('Successfully sent newsletter emails.'))

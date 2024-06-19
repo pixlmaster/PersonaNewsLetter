@@ -29,3 +29,6 @@ JSON_SEND_TIME_KEY = 'send_time'
 
 # MAIL CONSTANTS
 SENDER_EMAIL = 'personanewsletter@gmail.com'
+
+# Threading Constants
+MAX_WORKERS_SEND_EMAIL = 10

@@ -49,6 +49,7 @@ class Command(BaseCommand):
         contents = Content.objects.filter(send_time__lte=now)
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()
+
         # Create a thread pool executor
         with ThreadPoolExecutor(max_workers=MAX_WORKERS_SEND_EMAIL) as executor:
             # Dictionary to hold futures

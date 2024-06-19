@@ -23,4 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('add_subscriber/', views.add_subscriber),
     path('add_content/', views.add_content),
+    path('trigger-send-newsletters/', views.trigger_send_newsletters),
+
 ]

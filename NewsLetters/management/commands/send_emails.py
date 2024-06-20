@@ -51,21 +51,23 @@ class Command(BaseCommand):
 
         with ThreadPoolExecutor(max_workers=MAX_WORKERS_SEND_EMAIL) as executor:
             futures = {}
-
+            # For each content
             for content in contents:
+                # Try to get from cache
                 subscribers = subscriber_cache.get(content.topic)
-
+                # If not present in cache, find out which subscribers we need to send data to from DB
                 if not subscribers:
                     subscribers = list(Subscriber.objects.filter(topic=content.topic))
                     subscriber_cache[content.topic] = subscribers
-
+                # Submit each list of subscribers to the executor
                 future = executor.submit(send_newsletters, content, subscribers)
                 futures[future] = content
-
+            # Process the results as they complete
             for future in as_completed(futures):
                 content = futures[future]
                 try:
                     future.result()
+                    # Delete content from the DB after sending all emails
                     content.delete()
                     logger.debug(f"Content {content.content_text} processed and deleted")
                 except Exception as e:

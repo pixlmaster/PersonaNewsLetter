@@ -1,1 +1,1 @@
-web: gunicorn personaNewsLetter.wsgi
+web: gunicorn personaNewsLetter.wsgi --log-file=-

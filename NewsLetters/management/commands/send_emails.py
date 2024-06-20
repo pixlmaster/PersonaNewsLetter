@@ -46,10 +46,22 @@ class Command(BaseCommand):
         contents = Content.objects.filter()
         logger.info(len(contents))
 
+        self.stdout.write(self.style.SUCCESS('No Filter'))
+
         for content in contents:
             logger.info(content.topic.name + " " + str(content.send_time))
             logger.info(type(content.send_time))
             logger.info(content.send_time < now)
+
+        contents = Content.objects.filter(send_time__lt=now)
+        self.stdout.write(self.style.SUCCESS('Post Filter'))
+        for content in contents:
+            logger.info(content.topic.name + " " + str(content.send_time))
+            logger.info(type(content.send_time))
+            logger.info(content.send_time < now)
+
+        self.stdout.write(self.style.SUCCESS('End Filter'))
+
 
         subscriber_cache.clear()
         self.stdout.write(self.style.SUCCESS('Starting processing'))

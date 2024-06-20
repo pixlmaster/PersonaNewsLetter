@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "b93c2b1a-0072-4ad6-830c-5adace4e54d8",
+		"name": "PersonaNewsletter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7442775",
+		"_collection_link": "https://blue-astronaut-294129.postman.co/workspace/EPM-API~c5348783-18bc-4170-b564-b70098935fd6/collection/7442775-b93c2b1a-0072-4ad6-830c-5adace4e54d8?action=share&source=collection_link&creator=7442775"
+	},
+	"item": [
+		{
+			"name": "GetTopics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://personanewsletter-a7eee9691bce.herokuapp.com//topics/",
+					"protocol": "https",
+					"host": [
+						"personanewsletter-a7eee9691bce",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"",
+						"topics",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddSubscriber",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"topic\" : \"topic1\",\n    \"email\" : \"manrift704@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://personanewsletter-a7eee9691bce.herokuapp.com/add_subscriber/",
+					"protocol": "https",
+					"host": [
+						"personanewsletter-a7eee9691bce",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"add_subscriber",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddContent",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Import moment.js library",
+							"const moment = require('moment');",
+							"",
+							"// Generate current time in ISO 8601 format",
+							"const currentTime = moment().toISOString();",
+							"",
+							"// Set the current time in the request body or environment variable",
+							"pm.variables.set('current_time_iso', currentTime);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Import moment.js library",
+							"const moment = require('moment');",
+							"",
+							"// Generate current time in ISO 8601 format",
+							"const currentTime = moment().toISOString();",
+							"",
+							"// Set the current time in the request body or environment variable",
+							"pm.variables.set('current_time_iso', currentTime);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"topic\" : \"topic1\",\n    \"content_text\" : \"Example Text Content {{current_time_iso}}\",\n    \"send_time\": \"{{current_time_iso}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://personanewsletter-a7eee9691bce.herokuapp.com/add_content/",
+					"protocol": "https",
+					"host": [
+						"personanewsletter-a7eee9691bce",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"add_content",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TriggerNewsLetters-Manual",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/trigger-send-newsletters/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"trigger-send-newsletters",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UnSubscribe",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"topic_name\" : \"topic1\",\n    \"email\" : \"manrift704@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/remove_subscriber/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"remove_subscriber",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

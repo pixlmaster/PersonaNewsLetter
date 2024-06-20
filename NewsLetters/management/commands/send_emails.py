@@ -1,3 +1,4 @@
+import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import cachetools
@@ -45,7 +46,7 @@ class Command(BaseCommand):
     help = 'Send scheduled newsletter emails'
 
     def handle(self, *args, **kwargs):
-        now = timezone.now()
+        now = datetime.time
         contents = Content.objects.filter(send_time__lte=now)
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()

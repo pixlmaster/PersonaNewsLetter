@@ -49,6 +49,7 @@ class Command(BaseCommand):
         contents = Content.objects.filter(send_time__lte=now)
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()
+        self.stdout.write(self.style.SUCCESS('Starting processing'))
 
         # Create a thread pool executor
         with ThreadPoolExecutor(max_workers=MAX_WORKERS_SEND_EMAIL) as executor:
@@ -56,6 +57,7 @@ class Command(BaseCommand):
             futures = {}
             # For each content
             for content in contents:
+                self.stdout.write(self.style.SUCCESS('content :', content))
                 # Try to get from cache
                 subscribers = subscriber_cache.get(content.topic)
                 # If not present in cache, find out which subscribers we need to send data to from DB

@@ -43,7 +43,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         now = timezone.now()
-        contents = Content.objects.filter(send_time__lte=now)
+        contents = Content.objects.filter()
+
+        for content in contents:
+            logger.info(content.topic + " " + content.send_time)
+            logger.info(type(content.send_time))
+            logger.info(content.send_time < now)
+
         subscriber_cache.clear()
         self.stdout.write(self.style.SUCCESS('Starting processing'))
 

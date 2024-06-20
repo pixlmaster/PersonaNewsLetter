@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 
 import cachetools
 from django.core.management.base import BaseCommand
@@ -46,7 +47,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         now = timezone.now()
-        contents = Content.objects.filter()
+        logger.info(now)
+        now = datetime.utcnow()
+        logger.info(now)
+        contents = Content.objects.filter(send_time__lte=now)
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()
         self.stdout.write(self.style.SUCCESS('Starting processing'))

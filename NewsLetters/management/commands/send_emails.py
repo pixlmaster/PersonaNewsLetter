@@ -69,7 +69,7 @@ class Command(BaseCommand):
                 # Submit each list of subscribers to the executor
                 future = executor.submit(send_newsletters, content, subscribers)
                 futures[future] = content
-            logger.info("futures populated ")
+            logger.info("futures populated ", len(future))
             # Process the results as they complete
             for future in as_completed(futures):
                 content = futures[future]

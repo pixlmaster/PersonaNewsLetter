@@ -4,7 +4,7 @@
 
 This project is a Django-based newsletter service that allows users to subscribe to topics, add newsletter content, and send newsletters to subscribers.
 ## Functional Requirements
-
+NOTE: FIND THE UML DIAGRAMS IN THE UML FOLDER IN THE PROJECT
 - Three types of users: consumers ,producers and Site Admin.
 - **Consumer:**
     - Subscribe to a particular topic using their email and the topic name.
@@ -49,6 +49,45 @@ NOTE : USE POSTMAN COLLECTION ATTACHED IN THE PROJECT FOR EASE OF USE
 
 5. **Get All Topics:**
     - Send a GET request to the `/get-all-topics/` endpoint to retrieve a list of all available topics.
+
+## ToDos/Improvements
+
+### Authentication and Authorization for Producers
+- Implement authentication and authorization mechanisms for producers.
+- Separate account entities for producers and administrators.
+
+### Rate Limiting
+- Limit the number of newsletters that a producer can send to prevent abuse.
+
+### Content Entity
+- Create a “Content” entity where producers create a content entity with an ID to solve repetition.
+
+### Input Validation
+- Ensure producers cannot enter a date that’s already passed (≥ now).
+- Validate email addresses to ensure they are in the correct format.
+- Ensure `send_time` is a valid date.
+
+### Security
+- Move hard-coded passkeys and emails into Heroku environment variables for better security.
+
+### Database
+- Migrate from the built-in SQLite3 to a separate database instance. The file system-based DB behaves strangely under concurrent writes.
+
+### Logging
+- Improve logging to capture more detailed information and errors.
+
+### Documentation
+- Integrate Swagger for better API documentation.
+- Add detailed function documentation.
+
+### Email Retry Logic
+- Implement a retry logic (2-3 attempts) for email send failures to ensure reliability.
+
+### Scoped Out Items
+- Allow consumers to unsubscribe from all topics at once.
+- Enable sending content to multiple topics at once.
+- Allow subscription to multiple topics at once.
+
 
 ## API Endpoints
 

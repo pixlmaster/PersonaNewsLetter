@@ -3,6 +3,7 @@ from datetime import datetime
 
 import cachetools
 from django.core.management.base import BaseCommand
+from django.utils.timezone import make_aware
 
 from NewsLetters.consts import SENDER_EMAIL, STR_EMAIL_SENT_SUCCESSFULLY, MAX_WORKERS_SEND_EMAIL
 from NewsLetters.models import Content, Subscriber
@@ -47,8 +48,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         now = timezone.now()
-        logger.info(now)
-        now = datetime.utcnow()
+        aware_now = make_aware(now)
         logger.info(now)
         contents = Content.objects.filter(send_time__lte=now)
         # clear the cache, it's going to serve as a temp cache to save us DB calls

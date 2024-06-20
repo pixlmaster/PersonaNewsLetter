@@ -21,10 +21,10 @@ from NewsLetters import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('add_subscriber/', views.add_subscriber),
-    path('remove_subscriber/', views.remove_subscriber),
-    path('add_content/', views.add_content),
-    path('trigger-send-newsletters/', views.trigger_send_newsletters),
-    path('topics/', views.get_all_topics)
+    path('add-subscriber/', views.add_subscriber, name='add_subscriber'),
+    path('remove-subscriber/', views.remove_subscriber, name='remove_subscriber'),
+    path('add-content/', views.add_content, name='add_content'),
+    path('trigger-send-newsletters/', views.trigger_send_newsletters, name='trigger_send_newsletters'),
+    path('get-all-topics/', views.get_all_topics, name='get_all_topics'),
 
 ]

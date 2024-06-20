@@ -47,7 +47,7 @@ class Command(BaseCommand):
     help = 'Send scheduled newsletter emails'
 
     def handle(self, *args, **kwargs):
-        test_datetime = datetime(2024, 6, 20, 1, 44, 11, 124094, tzinfo=timezone.utc)
+        test_datetime = datetime(2024, 6, 20, 1, 44, 11, 124094)
         contents = Content.objects.filter(send_time__lte=test_datetime)
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()

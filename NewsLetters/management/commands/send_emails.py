@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         now = timezone.now()
-        contents = Content.objects.filter(send_time__lte=now)
+        contents = Content.objects
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()
         self.stdout.write(self.style.SUCCESS('Starting processing'))

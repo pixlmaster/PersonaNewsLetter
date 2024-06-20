@@ -57,7 +57,6 @@ class Command(BaseCommand):
             futures = {}
             # For each content
             for content in contents:
-                self.stdout.write(self.style.SUCCESS('content :', content))
                 # Try to get from cache
                 subscribers = subscriber_cache.get(content.topic)
                 # If not present in cache, find out which subscribers we need to send data to from DB
@@ -74,7 +73,6 @@ class Command(BaseCommand):
                 content = futures[future]
                 try:
                     future.result()
-                    self.stdout.write(self.style.SUCCESS('Successfully sent', content))
                     # Delete content from the DB after sending all emails
                     content.delete()
                 except Exception as e:

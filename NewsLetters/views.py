@@ -1,8 +1,11 @@
 import logging
 import threading
+from datetime import datetime
 
 from django.core.management import call_command
 from django.http import JsonResponse
+from django.utils import timezone
+from django.utils.timezone import make_aware
 from django.views.decorators.csrf import csrf_exempt
 
 from .ModelUtils.model_utils import handle_post_request
@@ -31,10 +34,14 @@ def add_subscriber(request):
 def add_content(request):
     # create function for content passed to the generic post request handler
     def create_content(data, topic):
+        tStr = data[JSON_SEND_TIME_KEY]
+        dt = datetime.strptime(tStr, '%Y-%m-%dT%H:%M:%S.%fZ')
+        dt_aware = make_aware(dt, timezone.timezone.utc)
+
         # TODO : VALIDATE CONTENT(SEND_TIME CANNOT BE IN PAST)
         content = Content.objects.create(
             content_text=data[JSON_CONTENT_TEXT_KEY],
-            send_time=data[JSON_SEND_TIME_KEY],
+            send_time=dt_aware,
             topic=topic
         )
         return JsonResponse({STR_MESSAGE: STR_CONTENT_ADDED_SUCCESSFULLY, JSON_CONTENT_TEXT_KEY: content.content_text,

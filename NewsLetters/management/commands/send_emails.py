@@ -1,9 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime
 
 import cachetools
 from django.core.management.base import BaseCommand
-from django.utils.timezone import make_aware
 
 from NewsLetters.consts import SENDER_EMAIL, STR_EMAIL_SENT_SUCCESSFULLY, MAX_WORKERS_SEND_EMAIL
 from NewsLetters.models import Content, Subscriber
@@ -47,8 +45,8 @@ class Command(BaseCommand):
     help = 'Send scheduled newsletter emails'
 
     def handle(self, *args, **kwargs):
-        test_datetime = datetime(2024, 6, 20, 1, 44, 11, 124094)
-        contents = Content.objects.filter(send_time__lte=test_datetime)
+        now = timezone.now()
+        contents = Content.objects.filter(send_time__lte=now)
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()
         self.stdout.write(self.style.SUCCESS('Starting processing'))

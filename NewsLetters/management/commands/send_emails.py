@@ -25,7 +25,7 @@ def send_newsletters(content, subscribers):
                 [subscriber.email],
                 fail_silently=True
             )
-            logger.info(STR_EMAIL_SENT_SUCCESSFULLY.format(subscriber.email))
+            logger.debug(STR_EMAIL_SENT_SUCCESSFULLY.format(subscriber.email))
         except Exception as e:
             logger.error(f"Failed to send email to {subscriber.email}: {str(e)}")
 

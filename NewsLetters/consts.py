@@ -11,6 +11,8 @@ STR_ERROR = "error"
 STR_SUCCESS = "success"
 STR_MESSAGE = "message"
 STR_STATUS = "status"
+STR_ID = "id"
+STR_NAME = "name"
 STR_SUBSCRIBED_SUCCESSFULLY = "Subscribed successfully"
 STR_CONTENT_ADDED_SUCCESSFULLY = "Content added successfully"
 STR_EMAIL_SENT_SUCCESSFULLY = "email successfully sent to {}"
@@ -34,6 +36,7 @@ METHOD_DELETE = 'DELETE'
 
 # Keys
 JSON_TOPIC_KEY = 'topic'
+JSON_TOPICS_KEY = 'topics'
 JSON_ID_KEY = 'id'
 JSON_EMAIL_KEY = 'email'
 JSON_TOPIC_NAME_KEY = 'topic_name'

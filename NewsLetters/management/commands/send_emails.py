@@ -65,7 +65,7 @@ class Command(BaseCommand):
                 if not subscribers:
                     subscribers = list(Subscriber.objects.filter(topic=content.topic))
                     subscriber_cache[content.topic] = subscribers
-
+                logger.info(subscribers)
                 # Submit each list of subscribers to the executor
                 future = executor.submit(send_newsletters, content, subscribers)
                 futures[future] = content

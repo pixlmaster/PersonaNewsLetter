@@ -47,7 +47,7 @@ class Command(BaseCommand):
         logger.info(len(contents))
 
         for content in contents:
-            logger.info(content.topic.name + " " + content.send_time)
+            logger.info(content.topic.name + " " + str(content.send_time))
             logger.info(type(content.send_time))
             logger.info(content.send_time < now)
 

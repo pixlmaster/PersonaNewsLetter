@@ -69,7 +69,7 @@ class Command(BaseCommand):
                 # Submit each list of subscribers to the executor
                 future = executor.submit(send_newsletters, content, subscribers)
                 futures[future] = content
-
+            logger.info("futures populated ")
             # Process the results as they complete
             for future in as_completed(futures):
                 content = futures[future]
@@ -79,5 +79,5 @@ class Command(BaseCommand):
                     content.delete()
                 except Exception as e:
                     logger.error(f"Error processing content {content.id}: {str(e)}")
-
+            logger.info("futures processed")
         self.stdout.write(self.style.SUCCESS('Successfully sent newsletter emails.'))

@@ -24,11 +24,10 @@ def send_newsletters(content, subscribers):
                 content.content_text,
                 SENDER_EMAIL,
                 [subscriber.email],
-                fail_silently=True
+                fail_silently=False
             )
-            print(STR_EMAIL_SENT_SUCCESSFULLY.format(subscriber.email))
+            logger.info("mail sent to " + subscriber.email)
         except Exception as e:
-            print("Sending mail failed")
             logger.error(f"Failed to send email to {subscriber.email}: {str(e)}")
 
 
@@ -51,22 +50,32 @@ class Command(BaseCommand):
         # clear the cache, it's going to serve as a temp cache to save us DB calls
         subscriber_cache.clear()
         self.stdout.write(self.style.SUCCESS('Starting processing'))
-        # foe each content
-        for content in contents:
-            # try to get from cache
-            subscribers = subscriber_cache.get(content.topic)
-            # if not present in cache ,find out which subscribers do we need to send data to from db
-            if not subscribers:
-                subscribers = Subscriber.objects.filter(topic=content.topic)
-                subscriber_cache[content.topic] = subscribers
-            # TODO: Implement multi threading for each subscriber list
-            for subscriber in subscribers:
-                send_mail(
-                    f"Newsletter: {content.topic.name}",
-                    content.content_text,
-                    SENDER_EMAIL,
-                    [subscriber.email],
-                    fail_silently= False
-                )
-                print(STR_EMAIL_SENT_SUCCESSFULLY.format(subscriber.email))
-            content.delete()
+
+        # Create a thread pool executor
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS_SEND_EMAIL) as executor:
+            # Dictionary to hold futures
+            futures = {}
+            # For each content
+            for content in contents:
+                # Try to get from cache
+                subscribers = subscriber_cache.get(content.topic)
+                # If not present in cache, find out which subscribers we need to send data to from DB
+                if not subscribers:
+                    subscribers = list(Subscriber.objects.filter(topic=content.topic))
+                    subscriber_cache[content.topic] = subscribers
+
+                # Submit each list of subscribers to the executor
+                future = executor.submit(send_newsletters, content, subscribers)
+                futures[future] = content
+
+            # Process the results as they complete
+            for future in as_completed(futures):
+                content = futures[future]
+                try:
+                    future.result()
+                    # Delete content from the DB after sending all emails
+                    content.delete()
+                except Exception as e:
+                    logger.error(f"Error processing content {content.id}: {str(e)}")
+
+        self.stdout.write(self.style.SUCCESS('Successfully sent newsletter emails.'))

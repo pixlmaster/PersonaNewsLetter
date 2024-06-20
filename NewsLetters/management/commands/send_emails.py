@@ -67,7 +67,7 @@ class Command(BaseCommand):
                 try:
                     future.result()
                     content.delete()
-                    logger.info(f"Content {content.content_text} processed and deleted")
+                    logger.debug(f"Content {content.content_text} processed and deleted")
                 except Exception as e:
                     logger.error(f"Error processing content {content.content_text}: {str(e)}")
 

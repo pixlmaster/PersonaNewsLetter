@@ -51,8 +51,10 @@ class Command(BaseCommand):
         subscriber_cache.clear()
         self.stdout.write(self.style.SUCCESS('Starting processing'))
 
-        # Create a thread pool executor
+        logger.info("outside thread pool")
+    # Create a thread pool executor
         with ThreadPoolExecutor(max_workers=MAX_WORKERS_SEND_EMAIL) as executor:
+            logger.info("inside thread pool")
             # Dictionary to hold futures
             futures = {}
             # For each content

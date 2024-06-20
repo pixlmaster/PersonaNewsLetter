@@ -58,9 +58,9 @@ class Command(BaseCommand):
             # Dictionary to hold futures
             futures = {}
             # For each content
-            logger.info(contents)
+            logger.info(len(contents))
             for content in contents:
-                logger.info(content)
+                logger.info(content.topic)
                 # Try to get from cache
                 subscribers = subscriber_cache.get(content.topic)
                 # If not present in cache, find out which subscribers we need to send data to from DB

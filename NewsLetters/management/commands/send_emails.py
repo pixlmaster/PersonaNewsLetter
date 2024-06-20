@@ -66,7 +66,7 @@ class Command(BaseCommand):
                     content.content_text,
                     SENDER_EMAIL,
                     [subscriber.email],
-                    fail_silently= True
+                    fail_silently= False
                 )
                 print(STR_EMAIL_SENT_SUCCESSFULLY.format(subscriber.email))
             content.delete()

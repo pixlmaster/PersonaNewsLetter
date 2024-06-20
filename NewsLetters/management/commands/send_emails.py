@@ -44,6 +44,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         now = timezone.now()
         contents = Content.objects.filter()
+        logger.info(len(contents))
 
         for content in contents:
             logger.info(content.topic + " " + content.send_time)

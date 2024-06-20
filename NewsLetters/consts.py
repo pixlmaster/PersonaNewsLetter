@@ -31,4 +31,4 @@ JSON_SEND_TIME_KEY = 'send_time'
 SENDER_EMAIL = 'personanewsletter@gmail.com'
 
 # Threading Constants
-MAX_WORKERS_SEND_EMAIL = 5
+MAX_WORKERS_SEND_EMAIL = 1
